@@ -7,7 +7,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			var ret;
 			frappe.call({
 				'async': false,
-				'method': 'subscription.routes.search.search_title',
+				'method': 'title_links.routes.search_title',
 				'args': {
 					doctype: me.df.options,
 					name: value
