@@ -3,7 +3,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		var me = this, su = this._super;
 		if (this.selected){
 			return this.selected_title;
-		} else {
+		} else if (value) {
 			var ret;
 			frappe.call({
 				'async': false,
@@ -20,6 +20,8 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				}
 			});
 			return ret;
+		} else {
+			return value;
 		}
 	},
 	get_value: function(){
