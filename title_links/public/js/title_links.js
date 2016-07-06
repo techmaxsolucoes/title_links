@@ -1,7 +1,7 @@
 frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
-		if (value) {
+		if (me.doctype && me.docname && value) {
 			frappe.call({
 				'async': false,
 				'method': 'subscription.routes.search.search_title',
@@ -9,12 +9,14 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					doctype: me.df.options,
 					name: value
 				},
-				'callback': function(res){
+				callback: function(res){
 					if (!res.exc){
 						ret = res.message[1];
 					}
 				}
 			});
+		} else if (me.value) {
+			ret = me.value;
 		} else {
 			ret = su(value)
 		}
@@ -175,18 +177,18 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 
 frappe.form.formatters.Link = function(value, docfield, options) {
-	var doctype = docfield._options || docfield.options;
+	var doctype = docfield._options || docfield.options, title;
 	if (value){
 		frappe.call({
 			'async': false,
 			'method': 'subscription.routes.search.search_title',
 			'args': {
-				doctype: docfield.options,
+				doctype: doctype,
 				name: value
 			},
 			callback: function(res){
 				if (!res.exc){
-					value = res.message[1];
+					title = res.message[1];
 				}
 			}
 		});
@@ -195,21 +197,21 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 		return value.replace(/^.(.*).$/, "$1");
 	}
 	if(options && options.for_print) {
-		return value;
+		return title || value;
 	}
 	if(!value) {
 		return "";
 	}
 	if(docfield && docfield.link_onclick) {
-		return repl('<a onclick="%(onclick)s">%(value)s</a>',
-			{onclick: docfield.link_onclick.replace(/"/g, '&quot;'), value:value});
+		return repl('<a onclick="%(onclick)s">%(title)s</a>',
+			{onclick: docfield.link_onclick.replace(/"/g, '&quot;'), title:title});
 	} else if(docfield && doctype) {
 		return repl('<a class="grey" href="#Form/%(doctype)s/%(name)s" data-doctype="%(doctype)s">%(label)s</a>', {
 			doctype: encodeURIComponent(doctype),
 			name: encodeURIComponent(value),
-			label: __(options && options.label || value)
+			label: __(options && options.label || title || value)
 		});
 	} else {
-		return value;
+		return title || value;
 	}
 }
