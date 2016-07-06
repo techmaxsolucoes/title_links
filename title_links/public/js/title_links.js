@@ -8,7 +8,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		if (me.doctype && me.docname && value) {
 			frappe.call({
 				'async': false,
-				'method': 'subscription.routes.search.search_title',
+				'method': 'frappe.desk.search.search_title',
 				'args': {
 					doctype: me.df.options,
 					name: value
@@ -185,7 +185,7 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 	if (value){
 		frappe.call({
 			'async': false,
-			'method': 'subscription.routes.search.search_title',
+			'method': 'frappe.desk.search.search_title',
 			'args': {
 				doctype: doctype,
 				name: value
