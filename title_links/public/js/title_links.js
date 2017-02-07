@@ -1,7 +1,3 @@
-frappe.assets.handler['html'] = function(txt, src){
-    frappe.templates[src.match(/([^\/]+)(?=\.\w+$)/)[0]] = txt.replace(/\$\.extend\(frappe\.\_messages\,\ (\{.*\})\)/, "");
-}
-
 frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
@@ -219,5 +215,3 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 		return title || value;
 	}
 }
-
-frappe.require('assets/title_links/templates/list_item_main.html');
