@@ -229,19 +229,23 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				}
 			},
 			item: function(item, input){
-				var parts = item.split("%%%"),
+				if (item.value.indexOf("__link_option") == -1){
+					var parts = item.split("%%%"),
 					d = {
 						value: parts[0],
 						description: parts[1],
 					},
 					_value = parts[2] || parts[0];
 				
-				if (me.translate_values){
-					_value = __(d.value);
-				}
-				var html = "<strong>" + _value + "</strong>";
-				if (d.description && d.value !== d.description){
-					html += '<br><span class="small">' + __(d.description) + '</span>';
+					if (me.translate_values){
+						_value = __(d.value);
+					}
+					var html = "<strong>" + _value + "</strong>";
+					if (d.description && d.value !== d.description){
+						html += '<br><span class="small">' + __(d.description) + '</span>';
+					}
+				} else {
+					var html = item.label;
 				}
 				return $('<li></li>')
 						.data('item.autocomplete', d)
