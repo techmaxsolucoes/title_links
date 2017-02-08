@@ -1,4 +1,21 @@
 frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
+	make_input: function(){
+		var me = this;
+		this._super();
+		this.$input.off("focus");
+		this.$input.on("focus", function(){
+			setTimeout(function(){
+				if (me.$input.val() && me.get_options()){
+					me.$link.toggle(true);
+					me.$link_open.attr("href", [
+						"#Form",
+						me.get_options(),
+						frappe.model.get_value(me.doctype, me.docname, me.df.fieldname)
+					].join("/"));
+				}
+			}, 500);
+		});
+	},
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
 		if (me.doctype && me.docname && value) {
