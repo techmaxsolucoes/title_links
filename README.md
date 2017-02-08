@@ -31,9 +31,10 @@ Your links will look like
 <img width="460" alt="schermata 2017-02-08 alle 17 00 56" src="https://cloud.githubusercontent.com/assets/11652845/22747130/6967474a-ee26-11e6-9231-5ccaeb1dc904.png">
 
 A selected value will look like
+
 <img width="501" alt="schermata-2017-02-08-alle-18 46 33" src="https://cloud.githubusercontent.com/assets/1288676/22749913/12713eb0-ee16-11e6-87e3-0fd4770ea9a2.png">
 
-Don't worry with Link Formatters, title link already define it to you!
+Don't worry with Link Formatters, title links already define it to you!
 
 <img width="1182" alt="schermata-2017-02-08-alle-18 31 28" src="https://cloud.githubusercontent.com/assets/1288676/22749635/2d6f43a2-ee15-11e6-80c0-d6fbb968a26b.png">
 
