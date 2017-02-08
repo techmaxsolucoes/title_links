@@ -12,6 +12,10 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 						me.get_options(),
 						frappe.model.get_value(me.doctype, me.docname, me.df.fieldname)
 					].join("/"));
+
+					if (!me.$input.val){
+						me.$input.val("").trigger("input");
+					}
 				}
 			}, 500);
 		});
