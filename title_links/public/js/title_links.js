@@ -21,7 +21,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		if (me.doctype && me.docname && value) {
 			frappe.call({
 				'async': false,
-				'method': 'frappe.desk.search.search_title',
+				'method': 'title_links.routes.search_title',
 				'args': {
 					doctype: me.df.options,
 					name: value
@@ -90,7 +90,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 				return frappe.call({
 					type: "GET",
-					method:'frappe.desk.search.search_link',
+					method:'title_links.routes.search_link',
 					no_spinner: true,
 					args: args,
 					callback: function(r) {
@@ -198,7 +198,7 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 	if (value){
 		frappe.call({
 			'async': false,
-			'method': 'frappe.desk.search.search_title',
+			'method': 'title_links.routes.search_title',
 			'args': {
 				doctype: doctype,
 				name: value
@@ -231,4 +231,24 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 	} else {
 		return title || value;
 	}
-}
+};
+
+frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
+	make_column: function(df, colsize, txt, ci){
+		var me = this;
+		frappe.call({
+			'async': false,
+			'method': 'title_links.routes.search_title',
+			'args': {
+				doctype: me.doc.doctype,
+				name: me.doc.name
+			},
+			callback: function(res){
+				if (!res.exc){
+					txt = res.message[1];
+				}
+			}
+		});
+		return this._super(df, colsize, txt, ci);
+	}
+})
