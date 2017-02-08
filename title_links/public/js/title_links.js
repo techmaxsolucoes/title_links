@@ -272,7 +272,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 			if (me.$input.cache[doctype][term] != null){
 				//immediately show from cache
-				me.$awesomplete.list = me.input.$cache[doctype][term];
+				me.$awesomplete.list = me.$input.cache[doctype][term];
 			}
 			
 			var args = {
