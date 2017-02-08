@@ -223,6 +223,9 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			},
 			filter: function(item, input){
 				var value = item.value.toLowerCase();
+				if (item.label){
+					value += " " + item.label.toLowerCase();
+				}
 				if (value.indexOf('__link_option') !== -1 ||
 					value.indexOf(input.toLowerCase()) !== -1){
 					return true;
