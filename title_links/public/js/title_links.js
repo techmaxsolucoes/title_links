@@ -236,19 +236,21 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 	make_column: function(df, colsize, txt, ci){
 		var me = this;
-		frappe.call({
-			'async': false,
-			'method': 'title_links.routes.search_title',
-			'args': {
-				doctype: df.options,
-				name: me.doc[df.fieldname]
-			},
-			callback: function(res){
-				if (!res.exc){
-					txt = res.message[1];
+		if (df.fieldtype.indexOf("Link") !== -1){
+			frappe.call({
+				'async': false,
+				'method': 'title_links.routes.search_title',
+				'args': {
+					doctype: (df.fieldtype === "Link") ? df.options : me.doc[df.options],
+					name: me.doc[df.fieldname]
+				},
+				callback: function(res){
+					if (!res.exc){
+						txt = res.message[1];
+					}
 				}
-			}
-		});
+			});	
+		}
 		return this._super(df, colsize, txt, ci);
 	}
 });
