@@ -72,6 +72,9 @@ def search_widget(doctype, txt, query=None, searchfield=None, start=0,
 				if meta.search_fields:
 					search_fields.extend(meta.get_search_fields())
 
+				if title_field and title_field not in search_fields:
+					search_fields.append(title_field)
+
 				for f in search_fields:
 					fmeta = meta.get_field(f.strip())
 					if f == "name" or (fmeta and fmeta.fieldtype in ["Data", "Text", "Small Text", "Long Text",
