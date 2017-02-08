@@ -238,7 +238,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					_value = parts[2] || parts[0];
 				
 					if (me.translate_values){
-						_value = __(d.value);
+						_value = __(_value);
 					}
 					var html = "<strong>" + _value + "</strong>";
 					if (d.description && d.value !== d.description){
