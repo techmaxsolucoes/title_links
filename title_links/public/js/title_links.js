@@ -333,7 +333,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 		this.$input.on("awesomplete-select", function(e) {
 			var o = e.originalEvent;
-			var item = me.awesomplete.get_item(o.text.value);
+			var item = me.$awesomplete.get_item(o.text.value);
 
 			me.autocomplete_open = false;
 
