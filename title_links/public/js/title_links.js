@@ -240,8 +240,8 @@ frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 			'async': false,
 			'method': 'title_links.routes.search_title',
 			'args': {
-				doctype: me.doc.doctype,
-				name: me.doc.name
+				doctype: df.options,
+				name: me.doc[df.fieldname]
 			},
 			callback: function(res){
 				if (!res.exc){
