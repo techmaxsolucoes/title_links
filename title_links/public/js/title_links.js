@@ -236,7 +236,7 @@ frappe.form.formatters.Link = function(value, docfield, options) {
 frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 	make_column: function(df, colsize, txt, ci){
 		var me = this;
-		if (df.fieldtype.indexOf("Link") !== -1){
+		if (this.doc && this.doc.doctype !== cur_frm.doctype && df.fieldtype.indexOf("Link") !== -1){
 			frappe.call({
 				'async': false,
 				'method': 'title_links.routes.search_title',
