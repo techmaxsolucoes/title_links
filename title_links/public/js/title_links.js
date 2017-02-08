@@ -251,4 +251,4 @@ frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 		});
 		return this._super(df, colsize, txt, ci);
 	}
-})
+});
