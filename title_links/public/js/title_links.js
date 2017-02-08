@@ -13,7 +13,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 						frappe.model.get_value(me.doctype, me.docname, me.df.fieldname)
 					].join("/"));
 
-					if (!me.$input.val){
+					if (!me.$input.val()){
 						me.$input.val("").trigger("input");
 					}
 				}
