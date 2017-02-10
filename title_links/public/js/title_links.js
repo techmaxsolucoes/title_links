@@ -449,3 +449,11 @@ frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 		return this._super(df, colsize, txt, ci);
 	}
 });
+
+(function(){
+frappe.templates["list_item_main"] = frappe.templates["list_item_main"].replace(
+	'<a class="filterable h6 text-muted grey" data-filter="{%= col.fieldname %},=,{%= value %}">{%= value %}</a>',
+	'<a class="filterable h6 text-muted grey" data-filter="{%= col.fieldname %},=,{%= value %}">{%= frappe.format(value, col.df, null, data) %}</a>'
+);
+delete frappe.template.compilede["list_item_main"];
+})();

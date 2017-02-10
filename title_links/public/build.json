@@ -1,6 +1,5 @@
 {
 	"js/title-links.min.js": [
-		"public/js/title_links.js",
-		"public/templates/list_item_main.html"
+		"public/js/title_links.js"
 	]
 }
