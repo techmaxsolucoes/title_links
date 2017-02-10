@@ -21,7 +21,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	},
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
-		if (me.doctype && me.docname && value) {
+		if (value) {
 			frappe.call({
 				'async': false,
 				'method': 'title_links.routes.search_title',
