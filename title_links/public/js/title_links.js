@@ -1,24 +1,4 @@
 frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
-	make_input: function(){
-		var me = this;
-		this._super();
-		this.$input.off("focus");
-		this.$input.on("focus", function(){
-			setTimeout(function(){
-				if (me.$input.val() && me.get_options()){
-					me.$link.toggle(true);
-					me.$link_open.attr("href", [
-						"#Form",
-						me.get_options(),
-						frappe.model.get_value(me.doctype, me.docname, me.df.fieldname)
-					].join("/"));
-				}
-				if (!me.$input.val()){
-					me.$input.val("").trigger("input");
-				}
-			}, 500);
-		});
-	},
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
 		if (value) {
@@ -45,8 +25,10 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	set_input: function(value){
 		this.last_value = this.value;
 		this.value = value;
-		this.$input && this.$input.data("value", value)
-		this.format_for_input(value);
+		if (this.$input) {
+			this.$input.data("value", value);
+			this.$input.val(this.format_for_input(value));
+		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
 	},
@@ -455,5 +437,5 @@ frappe.templates["list_item_main"] = frappe.templates["list_item_main"].replace(
 	'<a class="filterable h6 text-muted grey" data-filter="{%= col.fieldname %},=,{%= value %}">{%= value %}</a>',
 	'<a class="filterable h6 text-muted grey" data-filter="{%= col.fieldname %},=,{%= value %}">{%= frappe.format(value, col.df, null, data) %}</a>'
 );
-delete frappe.template.compilede["list_item_main"];
+delete frappe.template.compiled["list_item_main"];
 })();
