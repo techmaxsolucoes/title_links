@@ -42,13 +42,16 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		}
 		return ret;
 	},
+	set_input: function(value){
+		this.last_value = this.value;
+		this.value = value;
+		this.$input && this.$input.data("value", value)
+		this.format_for_input(value);
+		this.set_disp_area();
+		this.set_mandatory && this.set_mandatory(value);
+	},
 	get_value: function(){
-		var value = this._super();
-		if (this.doctype && this.docname && value){
-			return frappe.model.get_value(this.doctype, this.docname, this.df.fieldname);
-		} else {
-			return value;
-		}
+		return this.$input ? this.$input.data("value") : undefined;
 	},
 	setup_autocomplete: function() {
 		var me = this;
