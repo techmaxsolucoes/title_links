@@ -1,4 +1,41 @@
 frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
+	bind_change_event: function(){
+		var me = this;
+
+		this.$input && this.$input.on("change", this.change || function(e) {
+			if(me.df.change || me.df.onchange) {
+				// onchange event specified in df
+				(me.df.change || me.df.onchange).apply(this, [e]);
+				return;
+			}
+			if(me.doctype && me.docname && me.get_value) {
+				me.parse_validate_and_set_in_model(me.get_value());
+			} else {
+				// inline
+				var value = me.$input.val();
+				var parsed = me.parse ? me.parse(value) : value;
+				var set_input = function(before, after) {
+					if(before !== after) {
+						me.set_input(after);
+					}
+					if(me.doc) {
+						me.doc[me.df.fieldname] = value;
+					}
+					me.set_mandatory && me.set_mandatory(after);
+					if(me.after_validate) {
+						me.after_validate(after, me.$input);
+					}
+				}
+				if(me.validate) {
+					me.validate(parsed, function(validated) {
+						set_input(value, validated);
+					});
+				} else {
+					set_input(value, parsed);
+				}
+			}
+		});
+	},
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
 		if (value) {
