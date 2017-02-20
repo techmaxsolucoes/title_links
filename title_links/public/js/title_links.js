@@ -359,8 +359,8 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				me.set_mandatory(item.value);
 			}
 			o.preventDefault();
-			this.$awesomplete.close()
-			this.$input.trigger('awesomeplete-selectcomplete');
+			me.$awesomplete.close()
+			me.$input.trigger('awesomeplete-selectcomplete');
 		});
 
 		this.$input.on("awesomplete-selectcomplete", function(e) {
