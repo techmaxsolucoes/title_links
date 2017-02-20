@@ -329,7 +329,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			var TABKEY = 9;
 			if(e.keyCode === TABKEY) {
 				e.preventDefault();
-				me.awesomplete.close();
+				me.$awesomplete.close();
 				return false;
 			}
 
@@ -359,6 +359,8 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				me.set_mandatory(item.value);
 			}
 			o.preventDefault();
+			this.$awesomplete.close()
+			this.$input.trigger('awesomeplete-selectcomplete');
 		});
 
 		this.$input.on("awesomplete-selectcomplete", function(e) {
