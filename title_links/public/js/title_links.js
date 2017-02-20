@@ -356,6 +356,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			} else {
 				me.selected = true;
 				me.set_input(item.value);
+				me.$input.trigger('change');
 				me.set_mandatory(item.value);
 			}
 			o.preventDefault();
