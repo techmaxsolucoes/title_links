@@ -164,7 +164,9 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					me.$awesomplete.list = r.results;
 				}
 			});
-			
+			if (!me.$input.val()){
+				me.set_input(null);
+			}
 		});
 
 		this.$input.on("awesomplete-open", function(e){
@@ -215,11 +217,10 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				me.selected = true;
 				me.set_input(item.value);
 				me.$input.trigger('change');
-				me.set_mandatory(item.value);
 			}
-			e.preventDefault();
 			me.$awesomplete.close()
 			me.$input.trigger('awesomplete-selectcomplete');
+			e.preventDefault();
 		});
 
 		this.$input.on("awesomplete-selectcomplete", function(e) {
