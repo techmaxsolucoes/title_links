@@ -28,7 +28,6 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		if (this.$input) {
 			this.$input.data("value", value);
 			this.$input.val(this.format_for_input(value));
-			this.$input.trigger("change");
 		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
