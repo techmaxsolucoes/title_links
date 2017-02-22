@@ -165,7 +165,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					me.$awesomplete.list = r.results;
 				}
 			});
-			if (!me.$input.val()){
+			if (!me.$input.val() && me.$input.data("value")){
 				me.set_input(null);
 			}
 		});
