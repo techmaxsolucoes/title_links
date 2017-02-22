@@ -113,52 +113,56 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				me.$input.cache[doctype] = {};
 			}
 
-			var term = e.target.value;
+			if (e.target.value && (e.target.value||"").length){
+				var term = e.target.value;
 
-			if (me.$input.cache[doctype][term] != null){
-				//immediately show from cache
-				me.$awesomplete.list = me.$input.cache[doctype][term];
-			}
-			
-			var args = {
-				'txt': term,
-				'doctype': doctype
-			}
+				if (me.$input.cache[doctype][term] != null){
+					//immediately show from cache
+					me.$awesomplete.list = me.$input.cache[doctype][term];
+				}
+				
+				var args = {
+					'txt': term,
+					'doctype': doctype
+				}
 
-			me.set_custom_query(args);
+				me.set_custom_query(args);
 
-			frappe.call({
-				'type': 'GET',
-				'method': 'title_links.routes.search_link',
-				'no_spinner': true,
-				'args': args,
-				callback: function(r){
-					if (!me.$input.is(":focus")){
-						return;
-					}
+				frappe.call({
+					'type': 'GET',
+					'method': 'title_links.routes.search_link',
+					'no_spinner': true,
+					'args': args,
+					callback: function(r){
+						if (!me.$input.is(":focus")){
+							return;
+						}
 
-					if (!me.df.only_select){
-						if (frappe.model.can_create(doctype)
-							&& me.df.fieldtype !== "Dynamic Link"){
-							// new item
+						if (!me.df.only_select){
+							if (frappe.model.can_create(doctype)
+								&& me.df.fieldtype !== "Dynamic Link"){
+								// new item
+								r.results.push({
+									'label': "<span class='text-primary link-options>"
+											+ "<i class='fa fa-plus' style='margin-right: 5px;'></i>"
+											+ __("Create a new {0}", [__(me.df.options)])
+											+ "</span>",
+									'value': 'create_new__link_option',
+									'action': me.new_doc
+								});
+							}
+							// advanced search
 							r.results.push({
-								'label': "<span class='text-primary link-options>"
-										+ "<i class='fa fa-plus' style='margin-right: 5px;'></i>"
-										+ __("Create a new {0}", [__(me.df.options)])
+								label: "<span class='text-primary link-options'>"
+										+ "<i class='fa fa-search' style='margin-right: 5px;'></i>"
+										+ __("Advanced Search")
 										+ "</span>",
-								'value': 'create_new__link_option',
-								'action': me.new_doc
+								value: "advanced_search__link_option",
+								action: me.open_advanced_search
 							});
 						}
-						// advanced search
-						r.results.push({
-							label: "<span class='text-primary link-options'>"
-									+ "<i class='fa fa-search' style='margin-right: 5px;'></i>"
-									+ __("Advanced Search")
-									+ "</span>",
-							value: "advanced_search__link_option",
-							action: me.open_advanced_search
-						});
+						me.$input.cache[doctype][term] = r.results;
+						me.$awesomplete.list = r.results;
 					}
 					me.$input.cache[doctype][term] = r.results;
 					me.$awesomplete.list = r.results;
