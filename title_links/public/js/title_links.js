@@ -11,9 +11,9 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			},
 			update_input = function(){
 				if (me.doctype && me.docname){
-					me.set_input(me.$input.data("value"));
+					me.set_input(me.value || me.$input.data("value"));
 				} else {
-					me.set_input(me.$input.data("value") || null);
+					me.set_input(me.value || me.$input.data("value") || null);
 				}
 			}
 		this.$wrapper.on("refresh", function() {
