@@ -165,10 +165,8 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 						me.$input.cache[doctype][term] = r.results;
 						me.$awesomplete.list = r.results;
 					}
-					me.$input.cache[doctype][term] = r.results;
-					me.$awesomplete.list = r.results;
-				}
-			});
+				});
+			}
 		});
 
 		this.$input.on("awesomplete-open", function(e){
