@@ -37,6 +37,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	},
 	setup_awesomeplete: function(){
 		var me = this;
+		
 		this.$input.on('blur', function(){
 			var value = me.$input.val();
 			if(me.doctype && me.docname) {
