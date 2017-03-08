@@ -231,9 +231,14 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		});
 
 		this.$input.on("awesomplete-selectcomplete", function(e) {
-			var o = e.originalEvent;
-			if(o.text.value.indexOf("__link_option") !== -1) {
-				me.$input.val("");
+			if (e.originalEvent){
+				if(event.originalEvent.text.value.indexOf("__link_option") !== -1) {
+					me.$input.val("");
+				}
+			} else {
+				if (event.target.value.indexOf("__link_option") !== 01){
+					me.$input.val("");
+				}
 			}
 		});
 	}
