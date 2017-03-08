@@ -221,7 +221,11 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				me.set_input(item.value);
 				me.$input.trigger('change');
 			}
-			o.preventDefault();
+			if (e.originalEvent){
+				e.originalEvent.preventDefault();
+			} else {
+				e.preventDefault();
+			}
 			me.$awesomplete.close();
 			me.$input.trigger('awesomplete-selectcomplete');
 		});
