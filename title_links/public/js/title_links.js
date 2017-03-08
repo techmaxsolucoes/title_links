@@ -180,11 +180,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		});
 
 		this.$input.on("awesomplete-select", function(e) {
-			if (e.originalEvent){
-				var item = me.$awesomplete.get_item(e.originalEvent.text.value);
-			} else {
-				var item = me.$awesomplete.get_item(e.target.value);
-			}
+			var item = me.$awesomplete.get_item(e.originalEvent.text.value);
 			
 			me.autocomplete_open = false;
 
@@ -219,26 +215,12 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			} else {
 				me.selected = true;
 				me.set_input(item.value);
-				me.$input.trigger('change');
 			}
-			if (e.originalEvent){
-				e.originalEvent.preventDefault();
-			} else {
-				e.preventDefault();
-			}
-			me.$awesomplete.close();
-			me.$input.trigger('awesomplete-selectcomplete');
 		});
 
 		this.$input.on("awesomplete-selectcomplete", function(e) {
-			if (e.originalEvent){
-				if(event.originalEvent.text.value.indexOf("__link_option") !== -1) {
-					me.$input.val("");
-				}
-			} else {
-				if (event.target.value.indexOf("__link_option") !== 01){
-					me.$input.val("");
-				}
+			if(e.originalEvent.text.value.indexOf("__link_option") !== -1) {
+				me.$input.val("");
 			}
 		});
 	}
