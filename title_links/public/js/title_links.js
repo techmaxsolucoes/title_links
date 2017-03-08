@@ -11,7 +11,8 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			},
 			update_input = function(){
 				if (me.doctype && me.docname){
-					me.set_input(me.value || me.$input.data("value"));
+					me.value = frappe.model.get_value(me.doctype, me.docname, me.df.fieldname);
+					me.set_input(me.value);
 				} else {
 					me.set_input(me.value || me.$input.data("value") || null);
 				}
@@ -91,7 +92,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		var me = this;
 
 		this.$input.on('blur', function(){
-			var value = me.$input.val();
+			var value = me.$input.data("value");
 			if(me.doctype && me.docname) {
 				if(value!==me.last_value) {
 					me.parse_validate_and_set_in_model(value);
