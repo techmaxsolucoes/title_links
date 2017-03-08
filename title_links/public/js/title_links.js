@@ -16,6 +16,40 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					me.set_input(me.$input.data("value") || null);
 				}
 			}
+		this.$wrapper.on("refresh", function() {
+			if(me.disp_status != "None") {
+				// refresh value
+				if(me.doctype && me.docname) {
+					me.value = frappe.model.get_value(me.doctype, me.docname, me.df.fieldname);
+				}
+
+				if(me.disp_status=="Write") {
+					me.disp_area && $(me.disp_area).toggle(false);
+					$(me.input_area).toggle(true);
+					me.$input && me.$input.prop("disabled", false);
+					make_input();
+					update_input();
+				} else {
+					if(me.only_input) {
+						make_input();
+						update_input();
+					} else {
+						$(me.input_area).toggle(false);
+						if (me.disp_area) {
+							me.set_disp_area();
+							$(me.disp_area).toggle(true);
+						}
+					}
+					me.$input && me.$input.prop("disabled", true);
+				}
+
+				me.set_description();
+				me.set_label();
+				me.set_mandatory(me.value);
+				me.set_bold();
+			}
+			return false;
+		});
 	},
 	format_for_input: function(value){
 		var me = this, su = this._super, ret;
