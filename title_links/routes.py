@@ -28,9 +28,6 @@ def search_title(doctype, name):
 def search_widget(doctype, txt, query=None, searchfield=None, start=0,
                   page_len=10, filters=None, as_dict=False):
 
-    print "*************************** "
-    print query
-
     if isinstance(filters, basestring):
         import json
         filters = json.loads(filters)
@@ -114,9 +111,6 @@ def search_widget(doctype, txt, query=None, searchfield=None, start=0,
             from frappe.model.db_query import get_order_by
             order_by_based_on_meta = get_order_by(doctype, meta)
             order_by = "if(_relevance, _relevance, 99999), idx desc, {0}".format(order_by_based_on_meta)
-
-            print "***** "
-            print fields
 
             values = frappe.get_list(doctype, filters=filters, fields=fields, or_filters=or_filters,
                                      limit_start=start, limit_page_length=page_len, order_by=order_by,
