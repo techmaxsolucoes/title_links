@@ -51,7 +51,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	format_for_input: function (value) {
 		var me = this,
 			su = this._super,
-			ret;
+			ret
 
 		if (value) {
 			frappe.call({
@@ -80,10 +80,13 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		this.value = value;
 		if (this.$input) {
 			this.$input.data("value", value);
-			this.$input.val(value);
+
 			if ((this.frm && this.frm.doc) || cur_page.page.id.toLowerCase().indexOf("report") !== -1 ) {
 				this.$input.val(this.format_for_input(value));
+			} else {
+				this.$input.val(value);
 			}
+
 		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
@@ -92,7 +95,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	get_value: function () {
 		return this.$input ? this.$input.data("value") : undefined;
 	},
-	
+
 	setup_awesomeplete: function () {
 		var me = this;
 		this.$input.on("blur", function () {
@@ -135,6 +138,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 			item: function (item, input) {
 				d = this.get_item(item.value);
 				if (!d.label) { d.label = me.format_for_input(d.value) || d.value; }
+
 				var _label = (me.translate_values) ? __(d.label) : d.label;
 				var html = "<strong>" + _label + "</strong>";
 
