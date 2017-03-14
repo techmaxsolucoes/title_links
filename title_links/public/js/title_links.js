@@ -1,5 +1,5 @@
 frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
-		make_input: function() {
+	make_input: function () {
 		var me = this;
 		// line-height: 1 is for Mozilla 51, shows extra padding otherwise
 		$('<div class="link-field ui-front" style="position: relative; line-height: 1;">\
@@ -8,28 +8,30 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				<a class="btn-open no-decoration" title="' + __("Open Link") + '">\
 					<i class="octicon octicon-arrow-right"></i></a>\
 			</span>\
-		</div>').prependTo(this.input_area);
+		</div>')
+			.prependTo(this.input_area);
 		this.$input_area = $(this.input_area);
 		this.$input = this.$input_area.find('input');
 		this.$link = this.$input_area.find('.link-btn');
 		this.$link_open = this.$link.find('.btn-open');
 		this.set_input_attributes();
-		this.$input.on("focus", function() {
-			setTimeout(function() {
-				if(me.$input.val() && me.get_options()) {
+		this.$input.on("focus", function () {
+			setTimeout(function () {
+				if (me.$input.val() && me.get_options()) {
 					me.$link.toggle(true);
 					me.$link_open.attr('href', '#Form/' + me.get_options() + '/' + me.get_value());
 				}
 
-				if(!me.$input.val()) {
-					me.$input.val("").trigger("input");
+				if (!me.$input.val()) {
+					me.$input.val("")
+						.trigger("input");
 				}
 			}, 500);
 		});
-		this.$input.on("blur", function() {
+		this.$input.on("blur", function () {
 			// if this disappears immediately, the user's click
 			// does not register, hence timeout
-			setTimeout(function() {
+			setTimeout(function () {
 				me.$link.toggle(false);
 			}, 500);
 		});
@@ -39,8 +41,8 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		var me = this;
 		this.setup_buttons();
 		this.setup_awesomeplete();
-		if(this.df.change) {
-			this.$input.on("change", function() {
+		if (this.df.change) {
+			this.$input.on("change", function () {
 				me.df.change.apply(this);
 			});
 		}
@@ -78,7 +80,10 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		this.value = value;
 		if (this.$input) {
 			this.$input.data("value", value);
-			this.$input.val(this.format_for_input(value));
+			this.$input.val(value);
+			if ((this.frm && this.frm.doc) || cur_page.page.id.toLowerCase().indexOf("report") !== -1 ) {
+				this.$input.val(this.format_for_input(value));
+			}
 		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
@@ -87,7 +92,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 	get_value: function () {
 		return this.$input ? this.$input.data("value") : undefined;
 	},
-
+	
 	setup_awesomeplete: function () {
 		var me = this;
 		this.$input.on("blur", function () {
@@ -146,7 +151,6 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				return 0;
 			}
 		});
-
 
 		this.$input.on("input", function (e) {
 			var doctype = me.get_options();
@@ -255,13 +259,18 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				}, 100);
 
 			} else {
-				me.set_input(item.value);
+					if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
+						me.set_input(item.value);
+					} else {
+						me.$input.val(item.value);
+					}
 				me.$input.trigger("change");
 				setTimeout(function () {
-					me.set_input(item.value);
-				}, 1);
-
-				//me.set_mandatory(item.value);
+					if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
+						me.set_input(item.value);
+					}
+				}, 100);
+				me.set_mandatory(item.value);
 			}
 		});
 
