@@ -23,8 +23,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				}
 
 				if (!me.$input.val()) {
-					me.$input.val("")
-						.trigger("input");
+					me.$input.val("").trigger("input");
 				}
 			}, 500);
 		});
@@ -80,13 +79,11 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		this.value = value;
 		if (this.$input) {
 			this.$input.data("value", value);
-
 			if ((this.frm && this.frm.doc) || cur_page.page.id.toLowerCase().indexOf("report") !== -1 ) {
 				this.$input.val(this.format_for_input(value));
 			} else {
 				this.$input.val(value);
 			}
-
 		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
@@ -137,8 +134,13 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 			item: function (item, input) {
 				d = this.get_item(item.value);
-				if (!d.label) { d.label = me.format_for_input(d.value) || d.value; }
-
+				if (!d.label) {
+					if (this.frm && this.frm.doc || cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
+						d.label = me.format_for_input(d.value) || d.value;
+					} else {
+						d.label = d.value;
+					}
+				}
 				var _label = (me.translate_values) ? __(d.label) : d.label;
 				var html = "<strong>" + _label + "</strong>";
 
@@ -158,7 +160,13 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 		this.$input.on("input", function (e) {
 			var doctype = me.get_options();
+
 			if (!doctype) return;
+			/*
+			if (doctype.toLowerCase().indexOf("select") !== -1) {
+				doctype = cur_page.page.page.fields_dict.doctype.$input.val();
+			}
+			*/
 			if (!me.$input.cache[doctype]) {
 				me.$input.cache[doctype] = {};
 			}
@@ -262,18 +270,17 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					me.selected = false;
 				}, 100);
 
-			} else {
-					if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
-						me.set_input(item.value);
-					} else {
-						me.$input.val(item.value);
-					}
+			} else if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
+				me.set_input(item.value);
 				me.$input.trigger("change");
 				setTimeout(function () {
-					if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
 						me.set_input(item.value);
-					}
 				}, 100);
+				me.set_mandatory(item.value);
+
+			} else {
+				me.$input.val(item.value);
+				me.$input.trigger("change");
 				me.set_mandatory(item.value);
 			}
 		});
@@ -290,6 +297,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 frappe.form.formatters.Link = function (value, docfield, options) {
 	var doctype = docfield._options || docfield.options,
 		title;
+
 	if (value) {
 		frappe.call({
 			'async': false,
