@@ -78,12 +78,12 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		this.last_value = this.value;
 		this.value = value;
 		if (this.$input) {
-			this.$input.data("value", value);
 			if ((this.frm && this.frm.doc) || cur_page.page.id.toLowerCase().indexOf("report") !== -1 ) {
 				this.$input.val(this.format_for_input(value));
 			} else {
 				this.$input.val(value);
 			}
+			this.$input.data("value", value);
 		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
@@ -279,7 +279,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				me.set_mandatory(item.value);
 
 			} else {
-				me.$input.val(item.value);
+				me.set_input(item.value);
 				me.$input.trigger("change");
 				me.set_mandatory(item.value);
 			}
