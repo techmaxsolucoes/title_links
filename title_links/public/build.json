@@ -1,5 +1,7 @@
 {
     "js/title-links.min.js": [
-        "public/js/title_links.js"
+        "public/js/title_links.js",
+        "public/js/list/list_item_main.html"
+
     ]
 }

@@ -359,6 +359,50 @@ frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 });
 */
 
+frappe.views.ListRenderer = frappe.views.ListRenderer.extend({
+	// returns html for a data item,
+	// usually based on a template
+	get_item_html: function (data) {
+		var main = this.columns.map(column =>
+				frappe.render_template('list_item_main', {
+					data: data,
+					col: column,
+					value: data[column.fieldname],
+					formatters: this.settings.formatters,
+					subject: this.get_subject_html(data, true),
+					indicator: this.get_indicator_html(data),
+				})
+			)
+			.join("");
+
+		return frappe.render_template('list_item_row', {
+			data: data,
+			main: main,
+			settings: this.settings,
+			meta: this.meta,
+			indicator_dot: this.get_indicator_dot(data),
+		})
+	},
+
+	get_subject_html: function (data, without_workflow) {
+		data._without_workflow = without_workflow;
+		return frappe.render_template('list_item_subject', data);
+	},
+
+	get_indicator_html: function (doc) {
+		var indicator = frappe.get_indicator(doc, this.doctype);
+		if (indicator) {
+			return `<span class='indicator ${indicator[1]} filterable'
+				data-filter='${indicator[2]}'>
+				${__(indicator[0])}
+			<span>`;
+		}
+		return '';
+	}
+
+})
+
+/*
 (function () {
 	frappe.templates["list_item_main"] = frappe.templates["list_item_main"].replace(
 		'<a class="filterable text-muted grey ellipsis" data-filter="{%= col.fieldname %},=,{%= value %}">{%= value %}</a>',
@@ -366,3 +410,4 @@ frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 	);
 	delete frappe.template.compiled["list_item_main"];
 })();
+*/
