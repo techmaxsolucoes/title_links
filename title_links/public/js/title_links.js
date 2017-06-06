@@ -294,6 +294,63 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 });
 
 
+frappe.form.formatters.Link = function (value, docfield, options, doc) {
+	var doctype = docfield._options || docfield.options,
+		title;
+	var original_value = value;
+
+	if (value) {
+		frappe.call({
+			'async': false,
+			'method': 'title_links.routes.search_title',
+			'args': {
+				doctype: doctype,
+				name: value
+			},
+			callback: function (res) {
+				if (!res.exc) {
+					title = res.message[1];
+				}
+			}
+		});
+	}
+
+	if (value && value.match(/^['"].*['"]$/)) {
+		value.replace(/^.(.*).$/, "$1");
+	}
+
+	if (options && options.for_print) {
+		return value;
+	}
+
+	if (frappe.form.link_formatters[doctype]) {
+		value = frappe.form.link_formatters[doctype](value, doc);
+	}
+
+	if (!value) {
+		return "";
+	}
+
+	if (value[0] == "'" && value[value.length - 1] == "'") {
+		return value.substring(1, value.length - 1);
+	}
+
+	if (docfield && docfield.link_onclick) {
+		return repl('<a onclick="%(onclick)s">%(value)s</a>', { onclick: docfield.link_onclick.replace(/"/g, '&quot;'), title: title });
+
+	} else if (docfield && doctype) {
+		return repl('<a class="grey" href="#Form/%(doctype)s/%(name)s" data-doctype="%(doctype)s">%(label)s</a>', {
+			doctype: encodeURIComponent(doctype),
+			name: encodeURIComponent(original_value),
+			label: __(options && options.label || title || original_value)
+		});
+
+	} else {
+		title || value;
+	}
+}
+
+/*
 frappe.form.formatters.Link = function (value, docfield, options) {
 	var doctype = docfield._options || docfield.options,
 		title;
@@ -334,7 +391,7 @@ frappe.form.formatters.Link = function (value, docfield, options) {
 		return title || value;
 	}
 };
-
+*/
 /*
 frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 	make_column: function (df, colsize, txt, ci) {
