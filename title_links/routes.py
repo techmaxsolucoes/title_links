@@ -7,6 +7,11 @@ from frappe.utils import cstr, unique
 
 
 @frappe.whitelist()
+def is_valid_doctype(doctype):
+    return frappe.get_doc(doctype) is not None
+
+
+@frappe.whitelist()
 def search_link(doctype, txt, query=None, filters=None, page_len=20, searchfield=None):
 
     search_widget(doctype, txt, query, searchfield=searchfield, page_len=page_len, filters=filters)

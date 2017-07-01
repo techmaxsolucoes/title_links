@@ -23,8 +23,7 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 				}
 
 				if (!me.$input.val()) {
-					me.$input.val("")
-						.trigger("input");
+					me.$input.val("").trigger("input");
 				}
 			}, 500);
 		});
@@ -79,14 +78,12 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 		this.last_value = this.value;
 		this.value = value;
 		if (this.$input) {
-			this.$input.data("value", value);
-
 			if ((this.frm && this.frm.doc) || cur_page.page.id.toLowerCase().indexOf("report") !== -1 ) {
 				this.$input.val(this.format_for_input(value));
 			} else {
 				this.$input.val(value);
 			}
-
+			this.$input.data("value", value);
 		}
 		this.set_disp_area();
 		this.set_mandatory && this.set_mandatory(value);
@@ -137,8 +134,13 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 			item: function (item, input) {
 				d = this.get_item(item.value);
-				if (!d.label) { d.label = me.format_for_input(d.value) || d.value; }
-
+				if (!d.label) {
+					if (this.frm && this.frm.doc || cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
+						d.label = me.format_for_input(d.value) || d.value;
+					} else {
+						d.label = d.value;
+					}
+				}
 				var _label = (me.translate_values) ? __(d.label) : d.label;
 				var html = "<strong>" + _label + "</strong>";
 
@@ -158,7 +160,13 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 
 		this.$input.on("input", function (e) {
 			var doctype = me.get_options();
+
 			if (!doctype) return;
+			/*
+			if (doctype.toLowerCase().indexOf("select") !== -1) {
+				doctype = cur_page.page.page.fields_dict.doctype.$input.val();
+			}
+			*/
 			if (!me.$input.cache[doctype]) {
 				me.$input.cache[doctype] = {};
 			}
@@ -262,18 +270,17 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 					me.selected = false;
 				}, 100);
 
-			} else {
-					if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
-						me.set_input(item.value);
-					} else {
-						me.$input.val(item.value);
-					}
+			} else if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
+				me.set_input(item.value);
 				me.$input.trigger("change");
 				setTimeout(function () {
-					if (cur_page.page.id.toLowerCase().indexOf("report") !== -1) {
 						me.set_input(item.value);
-					}
 				}, 100);
+				me.set_mandatory(item.value);
+
+			} else {
+				me.set_input(item.value);
+				me.$input.trigger("change");
 				me.set_mandatory(item.value);
 			}
 		});
@@ -287,9 +294,67 @@ frappe.ui.form.ControlLink = frappe.ui.form.ControlLink.extend({
 });
 
 
+frappe.form.formatters.Link = function (value, docfield, options, doc) {
+	var doctype = docfield._options || docfield.options,
+		title;
+	var original_value = value;
+
+	if (value) {
+		frappe.call({
+			'async': false,
+			'method': 'title_links.routes.search_title',
+			'args': {
+				doctype: doctype,
+				name: value
+			},
+			callback: function (res) {
+				if (!res.exc) {
+					title = res.message[1];
+				}
+			}
+		});
+	}
+
+	if (value && value.match(/^['"].*['"]$/)) {
+		value.replace(/^.(.*).$/, "$1");
+	}
+
+	if (options && options.for_print) {
+		return value;
+	}
+
+	if (frappe.form.link_formatters[doctype]) {
+		value = frappe.form.link_formatters[doctype](value, doc);
+	}
+
+	if (!value) {
+		return "";
+	}
+
+	if (value[0] == "'" && value[value.length - 1] == "'") {
+		return value.substring(1, value.length - 1);
+	}
+
+	if (docfield && docfield.link_onclick) {
+		return repl('<a onclick="%(onclick)s">%(value)s</a>', { onclick: docfield.link_onclick.replace(/"/g, '&quot;'), title: title });
+
+	} else if (docfield && doctype) {
+		return repl('<a class="grey" href="#Form/%(doctype)s/%(name)s" data-doctype="%(doctype)s">%(label)s</a>', {
+			doctype: encodeURIComponent(doctype),
+			name: encodeURIComponent(original_value),
+			label: __(options && options.label || title || original_value)
+		});
+
+	} else {
+		title || value;
+	}
+}
+
+/*
 frappe.form.formatters.Link = function (value, docfield, options) {
 	var doctype = docfield._options || docfield.options,
 		title;
+
 	if (value) {
 		frappe.call({
 			'async': false,
@@ -326,7 +391,8 @@ frappe.form.formatters.Link = function (value, docfield, options) {
 		return title || value;
 	}
 };
-
+*/
+/*
 frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 	make_column: function (df, colsize, txt, ci) {
 		var me = this;
@@ -348,11 +414,46 @@ frappe.ui.form.GridRow = frappe.ui.form.GridRow.extend({
 		return this._super(df, colsize, txt, ci);
 	}
 });
+*/
 
-(function () {
-	frappe.templates["list_item_main"] = frappe.templates["list_item_main"].replace(
-		'<a class="filterable h6 text-muted grey" data-filter="{%= col.fieldname %},=,{%= value %}">{%= value %}</a>',
-		'<a class="filterable h6 text-muted grey" data-filter="{%= col.fieldname %},=,{%= value %}">{%= frappe.format(value, col.df, null, data) %}</a>'
-	);
-	delete frappe.template.compiled["list_item_main"];
-})();
+frappe.views.ListRenderer = frappe.views.ListRenderer.extend({
+	// returns html for a data item,
+	// usually based on a template
+	get_item_html: function (data) {
+		var main = this.columns.map(column =>
+				frappe.render_template('list_item_main', {
+					data: data,
+					col: column,
+					value: data[column.fieldname],
+					formatters: this.settings.formatters,
+					subject: this.get_subject_html(data, true),
+					indicator: this.get_indicator_html(data),
+				})
+			)
+			.join("");
+
+		return frappe.render_template('list_item_row', {
+			data: data,
+			main: main,
+			settings: this.settings,
+			meta: this.meta,
+			indicator_dot: this.get_indicator_dot(data),
+		})
+	},
+
+	get_subject_html: function (data, without_workflow) {
+		data._without_workflow = without_workflow;
+		return frappe.render_template('list_item_subject', data);
+	},
+
+	get_indicator_html: function (doc) {
+		var indicator = frappe.get_indicator(doc, this.doctype);
+		if (indicator) {
+			return `<span class='indicator ${indicator[1]} filterable'
+				data-filter='${indicator[2]}'>
+				${__(indicator[0])}
+			<span>`;
+		}
+		return '';
+	}
+})
