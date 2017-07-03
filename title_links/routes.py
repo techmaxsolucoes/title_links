@@ -8,7 +8,7 @@ from frappe.utils import cstr, unique
 
 @frappe.whitelist()
 def is_valid_doctype(doctype):
-    return frappe.get_doc(doctype) is not None
+    return frappe.db.exists("DocType", doctype)
 
 
 @frappe.whitelist()
