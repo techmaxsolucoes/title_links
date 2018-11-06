@@ -13,7 +13,6 @@ def is_valid_doctype(doctype):
 
 @frappe.whitelist()
 def search_link(doctype, txt, query=None, filters=None, page_len=20, searchfield=None):
-
     search_widget(doctype, txt, query, searchfield=searchfield, page_len=page_len, filters=filters)
     frappe.response['results'] = build_for_autosuggest(frappe.response['values'])
     print frappe.response['results']
@@ -141,8 +140,11 @@ def get_std_fields_list(meta, key):
 def build_for_autosuggest(res):
     results = []
     for r in res:
-        print r
-        out = {"value": r[0], "description": ", ".join(unique(cstr(d) for d in r if d)[0:])}
+        out = {
+            "value": r[0],
+            "description": ", ".join(unique(cstr(d) for d in r if d)[0:]),
+            "label": r[4]
+            }
         results.append(out)
 
     return results
